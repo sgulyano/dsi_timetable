@@ -1,0 +1,74 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %} 
+
+{% block title %}Timetable{% endblock %} 
+
+{% block content %} 
+{% load static %}
+<link href="{% static 'timetable/flat-ui.css' %}" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="{% static 'timetable/style.css' %}">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<nav class="navbar navbar-default navbar-expand-lg" role="navigation">
+    <a class="navbar-brand" href="#">DSI@TU Timetable</a>
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse-01"></button>
+    <div class="collapse navbar-collapse" id="navbar-collapse-01">
+
+        {% if user.is_authenticated %}
+
+        <p class="nav navbar-nav mr-auto"></p>
+        <p class="navbar-form form-inline my-2 my-lg-0">Hi {{ user.username }}! &nbsp;&nbsp;&nbsp; <a href="{% url 'logout' %}">Log Out</a> </p>
+
+        {% endif %}
+    </div>
+</nav>
+
+
+{% if user.is_authenticated %}
+
+<div class='container'>
+<table class="calendar table table-bordered">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            {% for item in time %}
+                <th width="11%" colspan=2>{{ item }}</th>
+            {% endfor %}
+
+            
+        </tr>
+    </thead>
+    <tbody>
+    {% for k, v in days.items %}
+        <tr>
+            
+            <td>{{ k }}</td>
+            {% for item in v %}
+                {% if item.0 == None %}
+                    <td class=" no-events" colspan="{{ item.2 }}"></td>
+                {% else %}
+                    <td class=" has-events" colspan="{{ item.2 }}">
+                        <div class="row-fluid lecture" style="width: 99%; height: 100%;">
+                            <span class="title">Combinatorics</span> 
+                            <span class="lecturer"><a>Prof.Someone</a></span>
+                            <span class="location">23/111</span>
+                        </div>
+                    </td>
+                {% endif %}
+            {% endfor %}
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% else %}
+<div class='container'>
+    <p>You are not logged in</p>
+<a href="{% url 'login' %}">Log In</a>
+    </div> 
+{% endif %} 
+{% endblock %}
